@@ -35,7 +35,6 @@ func (r *UserRepositoryImpl) CreateOneUser(ctx context.Context, u entities.User)
 
 	values := []interface{}{}
 	values = append(values, u.Name)
-	values = append(values, u.Email)
 
 	if u.Password.Valid {
 		values = append(values, u.Password)
@@ -57,7 +56,7 @@ func (r *UserRepositoryImpl) CreateOneUser(ctx context.Context, u entities.User)
 func (r *UserRepositoryImpl) FindOneByUsername(ctx context.Context, username string) (*entities.User, error) {
 	u := entities.User{}
 
-	err := r.db.QueryRowContext(ctx, qFindUserByUsername, username).Scan(&u.Id, &u.Name, &u.Email, &u.Password)
+	err := r.db.QueryRowContext(ctx, qFindUserByUsername, username).Scan(&u.Id, &u.Name, &u.Password)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
