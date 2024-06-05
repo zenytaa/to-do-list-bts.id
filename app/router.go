@@ -21,7 +21,8 @@ import (
 )
 
 type RouterOpt struct {
-	AuthHandler *handlers.AuthHandler
+	AuthHandler      *handlers.AuthHandler
+	ChecklistHandler *handlers.ChecklistHandler
 }
 
 func createRouter(config utils.Config) *gin.Engine {
@@ -31,26 +32,33 @@ func createRouter(config utils.Config) *gin.Engine {
 	}
 
 	userRepo := repositories.NewUserRepositoryPostgres(&repositories.UserRepoOpt{Db: db})
+	checklistRepo := repositories.NewChecklistRepository(&repositories.ChecklistRepoOpts{Db: db})
 
 	loginUsecase := usecases.NewLoginUsecaseImpl(&usecases.LoginUsecaseOpts{
 		UserRepo:          userRepo,
 		HashAlgorithm:     utils.NewBCryptHasher(),
 		AuthTokenProvider: utils.NewJwtProvider(config),
 	})
-
 	registerUsecase := usecases.NewRegisterUsecaseImpl(&usecases.RegisterUsecaseOpts{
 		HashAlgorithm:     utils.NewBCryptHasher(),
 		AuthTokenProvider: utils.NewJwtProvider(config),
 		UserRepo:          userRepo,
+	})
+	checklistUsecase := usecases.NewChecklistUsecaseImpl(&usecases.ChecklistUsecaseOpts{
+		ChecklistRepo: checklistRepo,
 	})
 
 	authHandler := handlers.NewAuthHandler(&handlers.AuthHandlerOpts{
 		LoginUsecase:    loginUsecase,
 		RegisterUsecase: registerUsecase,
 	})
+	checklistHandler := handlers.NewChecklistHandler(&handlers.CheklistHandlerOpts{
+		ChecklistUsecas: checklistUsecase,
+	})
 
 	return NewRouter(config, &RouterOpt{
-		AuthHandler: authHandler,
+		AuthHandler:      authHandler,
+		ChecklistHandler: checklistHandler,
 	})
 }
 
@@ -64,6 +72,13 @@ func NewRouter(config utils.Config, handlers *RouterOpt) *gin.Engine {
 	publicRouter := router.Group("/api")
 	publicRouter.POST("/login", handlers.AuthHandler.Login)
 	publicRouter.POST("/register", handlers.AuthHandler.RegisterUser)
+
+	privateRouter := router.Group("/")
+	{
+		privateRouter.Use(middlewares.JwtAuthMiddleware(config))
+		privateRouter.POST("/checklist", handlers.ChecklistHandler.CreateChecklist)
+		privateRouter.GET("/checklist", handlers.ChecklistHandler.GetAllChecklist)
+	}
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, dtos.ErrResponse{Message: constants.EndpointNotFoundErrMsg})

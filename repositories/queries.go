@@ -7,7 +7,17 @@ const (
 	`
 
 	qFindUserByUsername = `
-		SELECT id, name, email, password FROM users
-		WHERE name = $1 AND deleted_at IS NULL;
+	SELECT id, username, email, password FROM users
+	WHERE username = $1 AND deleted_at IS NULL;
+	`
+
+	qCreateOneChecklist = `
+	INSERT INTO checklists (item) VALUES
+	($1) RETURNING id
+	`
+
+	qFindAllChecklist = `
+	SELECT id, name from checklists
+	WHERE deleted_at IS NULL
 	`
 )

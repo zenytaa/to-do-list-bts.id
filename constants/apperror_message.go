@@ -8,4 +8,5 @@ const (
 	ValidationErrorMsg             = "validation error"
 	ResponseMsgErrorInternalServer = "our server encountered error, please try again later"
 	EndpointNotFoundErrMsg         = "endpoint not found"
+	ExpiredTokenErrMsg             = "token already expired"
 )

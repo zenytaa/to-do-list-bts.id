@@ -14,3 +14,11 @@ CREATE TABlE users(
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMP
 );
+
+CREATE TABLE checklists(
+    id BIGSERIAL PRIMARY KEY,
+    item VARCHAR NOT NULL, 
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMP
+)

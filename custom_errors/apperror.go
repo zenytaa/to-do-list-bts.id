@@ -10,6 +10,7 @@ import (
 
 var (
 	ErrInvalidAuthToken = errors.New(constants.InvalidAuthTokenErrMsg)
+	ErrTokenExpired     = errors.New(constants.ExpiredTokenErrMsg)
 )
 
 type AppError struct {
@@ -51,5 +52,13 @@ func InvalidAuthToken() *AppError {
 		Code:    http.StatusUnauthorized,
 		Message: constants.InvalidAuthTokenErrMsg,
 		err:     ErrInvalidAuthToken,
+	}
+}
+
+func TokenExpired() *AppError {
+	return &AppError{
+		Code:    http.StatusUnauthorized,
+		Message: constants.ExpiredTokenErrMsg,
+		err:     ErrTokenExpired,
 	}
 }
