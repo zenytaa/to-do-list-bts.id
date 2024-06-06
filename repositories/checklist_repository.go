@@ -84,9 +84,6 @@ func (r *ChecklistRepositoryImpl) FindOneById(ctx context.Context, id int64) (*e
 	checklist := entities.Checklist{}
 
 	err := r.db.QueryRowContext(ctx, qFindOneChecklistById, id).Scan(&checklist.Id, &checklist.Name)
-	if err != nil {
-		return nil, err
-	}
 
 	if err != nil {
 		if err == sql.ErrNoRows {
