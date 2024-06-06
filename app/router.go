@@ -53,7 +53,7 @@ func createRouter(config utils.Config) *gin.Engine {
 		RegisterUsecase: registerUsecase,
 	})
 	checklistHandler := handlers.NewChecklistHandler(&handlers.CheklistHandlerOpts{
-		ChecklistUsecas: checklistUsecase,
+		ChecklistUsecase: checklistUsecase,
 	})
 
 	return NewRouter(config, &RouterOpt{
@@ -78,6 +78,7 @@ func NewRouter(config utils.Config, handlers *RouterOpt) *gin.Engine {
 		privateRouter.Use(middlewares.JwtAuthMiddleware(config))
 		privateRouter.POST("/checklist", handlers.ChecklistHandler.CreateChecklist)
 		privateRouter.GET("/checklist", handlers.ChecklistHandler.GetAllChecklist)
+		privateRouter.DELETE("/checklist/:id", handlers.ChecklistHandler.DeleteChecklist)
 	}
 
 	router.NoRoute(func(c *gin.Context) {

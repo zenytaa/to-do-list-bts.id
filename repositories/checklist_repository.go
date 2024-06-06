@@ -3,8 +3,8 @@ package repositories
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
+	"to-do-list-bts.id/custom_errors"
 	"to-do-list-bts.id/entities"
 )
 
@@ -15,6 +15,7 @@ type ChecklistRepoOpts struct {
 type ChecklistRepository interface {
 	CreateOneChecklist(ctx context.Context, checkList entities.Cheklist) error
 	FindAllChecklist(ctx context.Context) ([]entities.Cheklist, error)
+	DeleteOneChecklist(ctx context.Context, id int64) error
 }
 
 type ChecklistRepositoryImpl struct {
@@ -28,7 +29,6 @@ func NewChecklistRepository(chROpts *ChecklistRepoOpts) ChecklistRepository {
 }
 
 func (r *ChecklistRepositoryImpl) CreateOneChecklist(ctx context.Context, checkList entities.Cheklist) error {
-	fmt.Println(checkList)
 	err := r.db.QueryRowContext(ctx, qCreateOneChecklist, checkList.Name).Scan(&checkList.Id)
 	if err != nil {
 		return err
@@ -55,4 +55,26 @@ func (r *ChecklistRepositoryImpl) FindAllChecklist(ctx context.Context) ([]entit
 	}
 
 	return checklists, nil
+}
+
+func (r *ChecklistRepositoryImpl) DeleteOneChecklist(ctx context.Context, id int64) error {
+	stmt, err := r.db.PrepareContext(ctx, qDeleteOneChecklist)
+	if err != nil {
+		return err
+	}
+
+	res, err := stmt.ExecContext(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return custom_errors.NotFound(sql.ErrNoRows)
+	}
+
+	return nil
 }

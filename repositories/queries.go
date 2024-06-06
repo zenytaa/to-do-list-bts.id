@@ -12,12 +12,17 @@ const (
 	`
 
 	qCreateOneChecklist = `
-	INSERT INTO checklists (item) VALUES
+	INSERT INTO checklists (name) VALUES
 	($1) RETURNING id
 	`
 
 	qFindAllChecklist = `
 	SELECT id, name from checklists
 	WHERE deleted_at IS NULL
+	`
+
+	qDeleteOneChecklist = `
+	UPDATE checklists SET
+	deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL;
 	`
 )

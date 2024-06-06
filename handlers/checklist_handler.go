@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"to-do-list-bts.id/constants"
@@ -12,16 +12,16 @@ import (
 )
 
 type CheklistHandlerOpts struct {
-	ChecklistUsecas usecases.ChecklistUsecas
+	ChecklistUsecase usecases.ChecklistUsecase
 }
 
 type ChecklistHandler struct {
-	ChecklistUsecas usecases.ChecklistUsecas
+	ChecklistUsecase usecases.ChecklistUsecase
 }
 
 func NewChecklistHandler(chHOpts *CheklistHandlerOpts) *ChecklistHandler {
 	return &ChecklistHandler{
-		ChecklistUsecas: chHOpts.ChecklistUsecas,
+		ChecklistUsecase: chHOpts.ChecklistUsecase,
 	}
 }
 
@@ -32,26 +32,24 @@ func (h *ChecklistHandler) CreateChecklist(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(payload)
-
 	checklist := entities.Cheklist{
 		Name: payload.Name,
 	}
 
-	err := h.ChecklistUsecas.CreateChecklist(ctx, checklist)
+	err := h.ChecklistUsecase.CreateChecklist(ctx, checklist)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 
 	ctx.JSON(http.StatusOK, dtos.ResponseMessage{
-		Message: constants.ResponseMsgCreatedChecklist,
+		Message: constants.ResponseMsgCreated,
 		Data:    nil,
 	})
 }
 
 func (h *ChecklistHandler) GetAllChecklist(ctx *gin.Context) {
-	checklists, err := h.ChecklistUsecas.GetAllChecklist(ctx)
+	checklists, err := h.ChecklistUsecase.GetAllChecklist(ctx)
 	if err != nil {
 		ctx.Error(err)
 		return
@@ -60,5 +58,25 @@ func (h *ChecklistHandler) GetAllChecklist(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dtos.ResponseMessage{
 		Message: constants.ResponseMsgOK,
 		Data:    dtos.ConvertToChecklisResponses(checklists),
+	})
+}
+
+func (h *ChecklistHandler) DeleteChecklist(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	err = h.ChecklistUsecase.DeleteChecklist(ctx, int64(id))
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dtos.ResponseMessage{
+		Message: constants.ResponseMsgDeleted,
+		Data:    nil,
 	})
 }
