@@ -2,12 +2,12 @@ package repositories
 
 const (
 	qCreateOneUser = `
-	INSERT INTO users (email, username ,password) VALUES
-	($1, $2, $3) RETURNING id
+	INSERT INTO users (username ,password) VALUES
+	($1, $2) RETURNING id
 	`
 
 	qFindUserByUsername = `
-	SELECT id, username, email, password FROM users
+	SELECT id, username, password FROM users
 	WHERE username = $1 AND deleted_at IS NULL;
 	`
 
