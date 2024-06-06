@@ -73,7 +73,7 @@ func NewRouter(config utils.Config, handlers *RouterOpt) *gin.Engine {
 	publicRouter.POST("/login", handlers.AuthHandler.Login)
 	publicRouter.POST("/register", handlers.AuthHandler.RegisterUser)
 
-	privateRouter := router.Group("/")
+	privateRouter := router.Group("/api")
 	{
 		privateRouter.Use(middlewares.JwtAuthMiddleware(config))
 		privateRouter.POST("/checklist", handlers.ChecklistHandler.CreateChecklist)
@@ -97,7 +97,7 @@ func Init() {
 
 	srv := http.Server{
 		Handler: router,
-		Addr:    fmt.Sprintf(":%s", config.DbPort),
+		Addr:    fmt.Sprintf(":%s", config.Port),
 	}
 
 	go func() {

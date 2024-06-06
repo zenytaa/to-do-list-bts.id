@@ -18,6 +18,7 @@ type Config struct {
 	HashCost       int
 	Issuer         string
 	AccessTokenExp int
+	Port           string
 }
 
 func ConfigInit() (Config, error) {
@@ -48,5 +49,6 @@ func ConfigInit() (Config, error) {
 		HashCost:       hashCost,
 		Issuer:         env["ISS"],
 		AccessTokenExp: accTokenExp,
+		Port:           env["PORT"],
 	}, nil
 }
