@@ -26,7 +26,7 @@ func NewItemRepositoryImpl(chiROpts *ItemRepoOpts) ItemRepository {
 }
 
 func (r *ItemRepositoryImpl) CreateOne(ctx context.Context, item entities.Item) error {
-	err := r.db.QueryRowContext(ctx, qCreateItem).Scan(item.Id)
+	err := r.db.QueryRowContext(ctx, qCreateItem, item.ItemName, item.Checklist.Id).Scan(&item.Id)
 	if err != nil {
 		return err
 	}

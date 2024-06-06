@@ -87,7 +87,7 @@ func NewRouter(config utils.Config, handlers *RouterOpt) *gin.Engine {
 		privateRouter.POST("/checklist", handlers.ChecklistHandler.CreateChecklist)
 		privateRouter.GET("/checklist", handlers.ChecklistHandler.GetAllChecklist)
 		privateRouter.DELETE("/checklist/:checklistId", handlers.ChecklistHandler.DeleteChecklist)
-		privateRouter.POST("/checklist/:checklistId", handlers.ItemHandler.CreateItem)
+		privateRouter.POST("/checklist/:checklistId/item", handlers.ItemHandler.CreateItem)
 	}
 
 	router.NoRoute(func(c *gin.Context) {
