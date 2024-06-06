@@ -35,7 +35,7 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := h.LoginUsecase.LoginUser(ctx, payload.Username, payload.Password)
+	token, err := h.LoginUsecase.LoginUser(ctx, payload.Name, payload.Password)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
