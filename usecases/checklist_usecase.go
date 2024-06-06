@@ -12,8 +12,8 @@ type ChecklistUsecaseOpts struct {
 }
 
 type ChecklistUsecase interface {
-	CreateChecklist(ctx context.Context, checklist entities.Cheklist) error
-	GetAllChecklist(ctx context.Context) ([]entities.Cheklist, error)
+	CreateChecklist(ctx context.Context, checklist entities.Checklist) error
+	GetAllChecklist(ctx context.Context) ([]entities.Checklist, error)
 	DeleteChecklist(ctx context.Context, id int64) error
 }
 
@@ -27,7 +27,7 @@ func NewChecklistUsecaseImpl(chUOpts *ChecklistUsecaseOpts) ChecklistUsecase {
 	}
 }
 
-func (u *ChecklistUsecaseImpl) CreateChecklist(ctx context.Context, checklist entities.Cheklist) error {
+func (u *ChecklistUsecaseImpl) CreateChecklist(ctx context.Context, checklist entities.Checklist) error {
 	err := u.ChecklistRepository.CreateOneChecklist(ctx, checklist)
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func (u *ChecklistUsecaseImpl) CreateChecklist(ctx context.Context, checklist en
 	return nil
 }
 
-func (u *ChecklistUsecaseImpl) GetAllChecklist(ctx context.Context) ([]entities.Cheklist, error) {
+func (u *ChecklistUsecaseImpl) GetAllChecklist(ctx context.Context) ([]entities.Checklist, error) {
 	checklists, err := u.ChecklistRepository.FindAllChecklist(ctx)
 	if err != nil {
 		return nil, err

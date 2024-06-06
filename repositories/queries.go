@@ -21,8 +21,18 @@ const (
 	WHERE deleted_at IS NULL
 	`
 
+	qFindOneChecklistById = `
+	SELECT id, name from checklists
+	WHERE id = $1 AND deleted_at IS NULL
+	`
+
 	qDeleteOneChecklist = `
 	UPDATE checklists SET
 	deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL;
+	`
+
+	qCreateItem = `
+	INSERT INTO items(item_name, checklist_id) VALUES
+	($1, $2) RETURNING id;
 	`
 )

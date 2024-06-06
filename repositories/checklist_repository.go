@@ -13,9 +13,10 @@ type ChecklistRepoOpts struct {
 }
 
 type ChecklistRepository interface {
-	CreateOneChecklist(ctx context.Context, checkList entities.Cheklist) error
-	FindAllChecklist(ctx context.Context) ([]entities.Cheklist, error)
+	CreateOneChecklist(ctx context.Context, checkList entities.Checklist) error
+	FindAllChecklist(ctx context.Context) ([]entities.Checklist, error)
 	DeleteOneChecklist(ctx context.Context, id int64) error
+	FindOneById(ctx context.Context, id int64) (*entities.Checklist, error)
 }
 
 type ChecklistRepositoryImpl struct {
@@ -28,7 +29,7 @@ func NewChecklistRepository(chROpts *ChecklistRepoOpts) ChecklistRepository {
 	}
 }
 
-func (r *ChecklistRepositoryImpl) CreateOneChecklist(ctx context.Context, checkList entities.Cheklist) error {
+func (r *ChecklistRepositoryImpl) CreateOneChecklist(ctx context.Context, checkList entities.Checklist) error {
 	err := r.db.QueryRowContext(ctx, qCreateOneChecklist, checkList.Name).Scan(&checkList.Id)
 	if err != nil {
 		return err
@@ -36,8 +37,8 @@ func (r *ChecklistRepositoryImpl) CreateOneChecklist(ctx context.Context, checkL
 	return nil
 }
 
-func (r *ChecklistRepositoryImpl) FindAllChecklist(ctx context.Context) ([]entities.Cheklist, error) {
-	checklists := []entities.Cheklist{}
+func (r *ChecklistRepositoryImpl) FindAllChecklist(ctx context.Context) ([]entities.Checklist, error) {
+	checklists := []entities.Checklist{}
 
 	rows, err := r.db.QueryContext(ctx, qFindAllChecklist)
 	if err != nil {
@@ -46,7 +47,7 @@ func (r *ChecklistRepositoryImpl) FindAllChecklist(ctx context.Context) ([]entit
 	defer rows.Close()
 
 	for rows.Next() {
-		checklist := entities.Cheklist{}
+		checklist := entities.Checklist{}
 		err := rows.Scan(&checklist.Id, &checklist.Name)
 		if err != nil {
 			return nil, err
@@ -77,4 +78,22 @@ func (r *ChecklistRepositoryImpl) DeleteOneChecklist(ctx context.Context, id int
 	}
 
 	return nil
+}
+
+func (r *ChecklistRepositoryImpl) FindOneById(ctx context.Context, id int64) (*entities.Checklist, error) {
+	checklist := entities.Checklist{}
+
+	err := r.db.QueryRowContext(ctx, qFindOneChecklistById, id).Scan(&checklist.Id, &checklist.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, custom_errors.NotFound(err)
+		}
+		return nil, err
+	}
+
+	return &checklist, nil
 }

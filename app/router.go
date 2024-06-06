@@ -23,6 +23,7 @@ import (
 type RouterOpt struct {
 	AuthHandler      *handlers.AuthHandler
 	ChecklistHandler *handlers.ChecklistHandler
+	ItemHandler      *handlers.ItemHandler
 }
 
 func createRouter(config utils.Config) *gin.Engine {
@@ -33,6 +34,7 @@ func createRouter(config utils.Config) *gin.Engine {
 
 	userRepo := repositories.NewUserRepositoryPostgres(&repositories.UserRepoOpt{Db: db})
 	checklistRepo := repositories.NewChecklistRepository(&repositories.ChecklistRepoOpts{Db: db})
+	itemRepo := repositories.NewItemRepositoryImpl(&repositories.ItemRepoOpts{Db: db})
 
 	loginUsecase := usecases.NewLoginUsecaseImpl(&usecases.LoginUsecaseOpts{
 		UserRepo:          userRepo,
@@ -47,6 +49,10 @@ func createRouter(config utils.Config) *gin.Engine {
 	checklistUsecase := usecases.NewChecklistUsecaseImpl(&usecases.ChecklistUsecaseOpts{
 		ChecklistRepo: checklistRepo,
 	})
+	itemUsecase := usecases.NewItemUsecaseImpl(&usecases.ItemUsecaseOpts{
+		ItemRepo:      itemRepo,
+		ChecklistRepo: checklistRepo,
+	})
 
 	authHandler := handlers.NewAuthHandler(&handlers.AuthHandlerOpts{
 		LoginUsecase:    loginUsecase,
@@ -55,10 +61,12 @@ func createRouter(config utils.Config) *gin.Engine {
 	checklistHandler := handlers.NewChecklistHandler(&handlers.CheklistHandlerOpts{
 		ChecklistUsecase: checklistUsecase,
 	})
+	itemHandler := handlers.NewItemHandler(&handlers.ItemHandlerOpts{ItemUsecase: itemUsecase})
 
 	return NewRouter(config, &RouterOpt{
 		AuthHandler:      authHandler,
 		ChecklistHandler: checklistHandler,
+		ItemHandler:      itemHandler,
 	})
 }
 
@@ -78,7 +86,8 @@ func NewRouter(config utils.Config, handlers *RouterOpt) *gin.Engine {
 		privateRouter.Use(middlewares.JwtAuthMiddleware(config))
 		privateRouter.POST("/checklist", handlers.ChecklistHandler.CreateChecklist)
 		privateRouter.GET("/checklist", handlers.ChecklistHandler.GetAllChecklist)
-		privateRouter.DELETE("/checklist/:id", handlers.ChecklistHandler.DeleteChecklist)
+		privateRouter.DELETE("/checklist/:checklistId", handlers.ChecklistHandler.DeleteChecklist)
+		privateRouter.POST("/checklist/:checklistId", handlers.ItemHandler.CreateItem)
 	}
 
 	router.NoRoute(func(c *gin.Context) {

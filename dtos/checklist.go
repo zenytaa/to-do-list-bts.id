@@ -11,14 +11,14 @@ type ChecklistResponse struct {
 	Name string `json:"name"`
 }
 
-func ConvertToChecklisResponse(checklist entities.Cheklist) *ChecklistResponse {
+func ConvertToChecklisResponse(checklist entities.Checklist) *ChecklistResponse {
 	return &ChecklistResponse{
 		Id:   checklist.Id,
 		Name: checklist.Name,
 	}
 }
 
-func ConvertToChecklisResponses(checklists []entities.Cheklist) []ChecklistResponse {
+func ConvertToChecklisResponses(checklists []entities.Checklist) []ChecklistResponse {
 	response := []ChecklistResponse{}
 
 	for _, ch := range checklists {

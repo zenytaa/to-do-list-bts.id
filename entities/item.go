@@ -5,9 +5,11 @@ import (
 	"time"
 )
 
-type Checklist struct {
+type Item struct {
 	Id        int64
-	Name      string
+	ItemName  string
+	Checklist Checklist
+	IsDone    bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt sql.NullTime

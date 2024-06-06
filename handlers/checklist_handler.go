@@ -32,7 +32,7 @@ func (h *ChecklistHandler) CreateChecklist(ctx *gin.Context) {
 		return
 	}
 
-	checklist := entities.Cheklist{
+	checklist := entities.Checklist{
 		Name: payload.Name,
 	}
 
@@ -62,14 +62,14 @@ func (h *ChecklistHandler) GetAllChecklist(ctx *gin.Context) {
 }
 
 func (h *ChecklistHandler) DeleteChecklist(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
+	checklistIdStr := ctx.Param("checklistId")
+	checklistId, err := strconv.Atoi(checklistIdStr)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
 
-	err = h.ChecklistUsecase.DeleteChecklist(ctx, int64(id))
+	err = h.ChecklistUsecase.DeleteChecklist(ctx, int64(checklistId))
 	if err != nil {
 		ctx.Error(err)
 		return
