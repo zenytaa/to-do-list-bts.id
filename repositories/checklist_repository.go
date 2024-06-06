@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"to-do-list-bts.id/entities"
 )
@@ -27,7 +28,8 @@ func NewChecklistRepository(chROpts *ChecklistRepoOpts) ChecklistRepository {
 }
 
 func (r *ChecklistRepositoryImpl) CreateOneChecklist(ctx context.Context, checkList entities.Cheklist) error {
-	err := r.db.QueryRowContext(ctx, qCreateOneChecklist).Scan(&checkList.Name)
+	fmt.Println(checkList)
+	err := r.db.QueryRowContext(ctx, qCreateOneChecklist, checkList.Name).Scan(&checkList.Id)
 	if err != nil {
 		return err
 	}

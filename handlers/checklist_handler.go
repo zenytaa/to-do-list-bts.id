@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,8 @@ func (h *ChecklistHandler) CreateChecklist(ctx *gin.Context) {
 		_ = ctx.Error(err)
 		return
 	}
+
+	fmt.Println(payload)
 
 	checklist := entities.Cheklist{
 		Name: payload.Name,
