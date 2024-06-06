@@ -35,7 +35,7 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := h.LoginUsecase.LoginUser(ctx, payload.Name, payload.Password)
+	token, err := h.LoginUsecase.LoginUser(ctx, payload.Username, payload.Password)
 	if err != nil {
 		_ = ctx.Error(err)
 		return
@@ -55,7 +55,7 @@ func (h *AuthHandler) RegisterUser(ctx *gin.Context) {
 	}
 
 	u := entities.User{
-		Name:     payload.Name,
+		Name:     payload.Username,
 		Password: *utils.StringToNullString(*payload.Password),
 	}
 

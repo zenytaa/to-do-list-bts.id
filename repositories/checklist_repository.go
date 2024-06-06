@@ -27,7 +27,7 @@ func NewChecklistRepository(chROpts *ChecklistRepoOpts) ChecklistRepository {
 }
 
 func (r *ChecklistRepositoryImpl) CreateOneChecklist(ctx context.Context, checkList entities.Cheklist) error {
-	err := r.db.QueryRowContext(ctx, qCreateOneChecklist).Scan(&checkList.Id)
+	err := r.db.QueryRowContext(ctx, qCreateOneChecklist).Scan(&checkList.Name)
 	if err != nil {
 		return err
 	}
