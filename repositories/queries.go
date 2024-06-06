@@ -2,8 +2,8 @@ package repositories
 
 const (
 	qCreateOneUser = `
-	INSERT INTO users (username ,password) VALUES
-	($1, $2) RETURNING id
+	INSERT INTO users (username, email, password) VALUES
+	($1, $2, $3) RETURNING id
 	`
 
 	qFindUserByUsername = `

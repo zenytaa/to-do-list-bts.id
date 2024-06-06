@@ -56,6 +56,7 @@ func (h *AuthHandler) RegisterUser(ctx *gin.Context) {
 
 	u := entities.User{
 		Name:     payload.Username,
+		Email:    payload.Email,
 		Password: *utils.StringToNullString(*payload.Password),
 	}
 

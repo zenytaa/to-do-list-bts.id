@@ -7,6 +7,7 @@ import (
 
 type User struct {
 	Id        int64
+	Email     string
 	Name      string
 	Password  sql.NullString
 	CreatedAt time.Time

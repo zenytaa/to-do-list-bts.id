@@ -35,6 +35,7 @@ func (r *UserRepositoryImpl) CreateOneUser(ctx context.Context, u entities.User)
 
 	values := []interface{}{}
 	values = append(values, u.Name)
+	values = append(values, u.Email)
 
 	if u.Password.Valid {
 		values = append(values, u.Password)
