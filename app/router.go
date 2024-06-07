@@ -84,10 +84,19 @@ func NewRouter(config utils.Config, handlers *RouterOpt) *gin.Engine {
 	privateRouter := router.Group("/api")
 	{
 		privateRouter.Use(middlewares.JwtAuthMiddleware(config))
-		privateRouter.POST("/checklist", handlers.ChecklistHandler.CreateChecklist)
-		privateRouter.GET("/checklist", handlers.ChecklistHandler.GetAllChecklist)
-		privateRouter.DELETE("/checklist/:checklistId", handlers.ChecklistHandler.DeleteChecklist)
-		privateRouter.POST("/checklist/:checklistId/item", handlers.ItemHandler.CreateItem)
+
+		checklistRouter := privateRouter.Group("/checklist")
+		checklistRouter.POST("/", handlers.ChecklistHandler.CreateChecklist)
+		checklistRouter.GET("/", handlers.ChecklistHandler.GetAllChecklist)
+		checklistRouter.DELETE("/:checklistId", handlers.ChecklistHandler.DeleteChecklist)
+
+		itemRouter := checklistRouter.Group("/:checklistId")
+		itemRouter.POST("/item", handlers.ItemHandler.CreateItem)
+		itemRouter.GET("/item", handlers.ItemHandler.GetAllItem)
+		itemRouter.GET("/item/:checklistItemId", handlers.ItemHandler.GetItemById)
+		itemRouter.PUT("/item/:checklistItemId", handlers.ItemHandler.UpdateStatusItem)
+		itemRouter.PUT("/item/rename/:checklistItemId", handlers.ItemHandler.UpdateItemName)
+		itemRouter.DELETE("/item/:checklistItemId", handlers.ItemHandler.DeleteItem)
 	}
 
 	router.NoRoute(func(c *gin.Context) {

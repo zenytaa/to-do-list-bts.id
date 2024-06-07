@@ -7,4 +7,5 @@ const (
 	ResponseMsgOK           = "ok"
 	ResponseMsgCreated      = "successfully created"
 	ResponseMsgDeleted      = "successfully deleted"
+	ResponseMsgUpdated      = "successfully updated"
 )
